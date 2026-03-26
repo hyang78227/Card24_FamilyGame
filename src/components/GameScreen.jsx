@@ -138,11 +138,7 @@ export function GameScreen({
             </motion.div>
           )}
         </AnimatePresence>
-        {!timedOut ? (
-          <p className="text-center text-gray-400 text-xs">
-            Tap the winner's photo to award a point
-          </p>
-        ) : (
+        {timedOut && (
           <p className="text-center text-red-500 text-xs font-bold">
             ⏱ Time's up! No point this round.
           </p>
