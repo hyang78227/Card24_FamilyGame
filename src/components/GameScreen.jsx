@@ -113,10 +113,10 @@ export function GameScreen({
       )}
 
       {/* Cards — 2×2 grid, dominant */}
-      <div className="flex-1 min-h-0 px-4 pt-3 pb-1">
-        <div className="grid grid-cols-2 grid-rows-2 h-full gap-3">
+      <div className="flex-1 min-h-0 px-4 pt-3 pb-1 flex items-center justify-center">
+        <div className="grid grid-cols-2" style={{ gap: '16px' }}>
           {cards.map((card, i) => (
-            <div key={`${round}-${i}`} className="flex items-center justify-center min-h-0">
+            <div key={`${round}-${i}`} className="flex items-center justify-center">
               <PlayingCard card={card} index={i} dealt fill />
             </div>
           ))}
@@ -149,22 +149,28 @@ export function GameScreen({
         )}
       </div>
 
-      {/* Next round button (after timeout) */}
-      {timedOut && (
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="shrink-0 px-4 pb-2"
-        >
-          <button
+      {/* Next round / Skip buttons */}
+      <div className="shrink-0 px-4 pb-2 flex gap-3">
+        {timedOut ? (
+          <motion.button
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
             onClick={handleNextRound}
-            className="w-full py-3 rounded-2xl font-bold text-white text-base"
+            className="flex-1 py-3 rounded-2xl font-bold text-white text-base"
             style={{ background: '#1E3A5F' }}
           >
             Next Round →
+          </motion.button>
+        ) : (
+          <button
+            onClick={handleNextRound}
+            className="flex-1 py-3 rounded-2xl font-bold text-base"
+            style={{ background: '#f3f4f6', color: '#6b7280' }}
+          >
+            Skip
           </button>
-        </motion.div>
-      )}
+        )}
+      </div>
 
       {/* Player avatars — single compact row */}
       <div className="shrink-0 flex flex-row justify-around items-start px-4 py-2 pb-4">

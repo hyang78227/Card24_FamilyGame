@@ -6,7 +6,7 @@ export function PlayingCard({ card, index = 0, dealt = false, fill = false }) {
   const color = red ? '#DC2626' : '#1a1a1a'
 
   const cardStyle = fill
-    ? { height: '100%', aspectRatio: '72/100', border: '2px solid #e5e7eb', padding: '8% 7%' }
+    ? { width: '42vw', aspectRatio: '72/100', border: '2px solid #e5e7eb', padding: '8% 7%' }
     : { width: 72, height: 100, border: '1.5px solid #e5e7eb', padding: '4px 8px' }
 
   // In fill mode cards are ~42vw wide, so vw-based font sizes scale naturally
