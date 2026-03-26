@@ -64,17 +64,11 @@ export function GameScreen({
     onNextRound()
   }
 
-  const playerGrid = activePlayers.length <= 2
-    ? 'grid-cols-2'
-    : activePlayers.length === 3
-    ? 'grid-cols-3'
-    : 'grid-cols-2'
-
   return (
-    <div className="flex flex-col min-h-screen bg-white">
+    <div className="flex flex-col bg-white overflow-hidden" style={{ height: '100dvh' }}>
       {/* Top bar */}
       <div
-        className="flex items-center justify-between px-4 py-3"
+        className="shrink-0 flex items-center justify-between px-4 py-3"
         style={{ background: '#1E3A5F' }}
       >
         <span className="text-white font-black text-lg">Round {round}</span>
@@ -98,7 +92,7 @@ export function GameScreen({
 
       {/* Timer bar */}
       {settings.timerOn && (
-        <div className="h-2 bg-gray-200 w-full">
+        <div className="shrink-0 h-2 bg-gray-200 w-full">
           <motion.div
             className="h-full rounded-r"
             style={{
@@ -111,78 +105,81 @@ export function GameScreen({
         </div>
       )}
       {settings.timerOn && (
-        <div className="text-center text-xs font-bold mt-0.5"
+        <div className="shrink-0 text-center text-xs font-bold mt-0.5"
           style={{ color: timer.isLow ? '#DC2626' : '#6b7280' }}
         >
           {timer.timeLeft}s
         </div>
       )}
 
-      {/* Cards */}
-      <div className="flex justify-center gap-3 px-4 py-6">
-        {cards.map((card, i) => (
-          <PlayingCard key={`${round}-${i}`} card={card} index={i} dealt />
-        ))}
+      {/* Cards — 2×2 grid, dominant */}
+      <div className="flex-1 min-h-0 px-4 pt-3 pb-1">
+        <div className="grid grid-cols-2 grid-rows-2 h-full gap-3">
+          {cards.map((card, i) => (
+            <div key={`${round}-${i}`} className="flex items-center justify-center min-h-0">
+              <PlayingCard card={card} index={i} dealt fill />
+            </div>
+          ))}
+        </div>
       </div>
 
-      {/* Solution (if enabled + timed out / visible) */}
-      <AnimatePresence>
-        {solution && timedOut && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            className="mx-4 mb-2 px-4 py-2 rounded-xl text-center"
-            style={{ background: '#f0fdf4', border: '1.5px solid #86efac' }}
-          >
-            <span className="text-green-700 font-bold text-sm">💡 {solution} = 24</span>
-          </motion.div>
+      {/* Solution + instructions (compact) */}
+      <div className="shrink-0 px-4 py-1">
+        <AnimatePresence>
+          {solution && timedOut && (
+            <motion.div
+              initial={{ opacity: 0, y: -6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="mb-1 px-4 py-1.5 rounded-xl text-center"
+              style={{ background: '#f0fdf4', border: '1.5px solid #86efac' }}
+            >
+              <span className="text-green-700 font-bold text-sm">💡 {solution} = 24</span>
+            </motion.div>
+          )}
+        </AnimatePresence>
+        {!timedOut ? (
+          <p className="text-center text-gray-400 text-xs">
+            Tap the winner's photo to award a point
+          </p>
+        ) : (
+          <p className="text-center text-red-500 text-xs font-bold">
+            ⏱ Time's up! No point this round.
+          </p>
         )}
-      </AnimatePresence>
-
-      {/* Instructions */}
-      {!timedOut ? (
-        <p className="text-center text-gray-400 text-sm px-4 mb-2">
-          Tap the winner's photo to award a point
-        </p>
-      ) : (
-        <p className="text-center text-red-500 text-sm font-bold px-4 mb-2">
-          ⏱ Time's up! No point this round.
-        </p>
-      )}
-
-      {/* Player buttons */}
-      <div className={`grid ${playerGrid} gap-4 px-6 py-4 flex-1 content-start`}>
-        {activePlayers.map(player => (
-          <div key={player.id} className="flex justify-center">
-            <PlayerButton
-              player={player}
-              score={getScore(player.id)}
-              showScore={showScores}
-              onPress={() => handleAwardPoint(player.id)}
-              disabled={timedOut}
-              size="lg"
-            />
-          </div>
-        ))}
       </div>
 
       {/* Next round button (after timeout) */}
       {timedOut && (
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          className="px-4 pb-6"
+          className="shrink-0 px-4 pb-2"
         >
           <button
             onClick={handleNextRound}
-            className="w-full py-4 rounded-2xl font-bold text-white text-lg"
+            className="w-full py-3 rounded-2xl font-bold text-white text-base"
             style={{ background: '#1E3A5F' }}
           >
             Next Round →
           </button>
         </motion.div>
       )}
+
+      {/* Player avatars — single compact row */}
+      <div className="shrink-0 flex flex-row justify-around items-start px-4 py-2 pb-4">
+        {activePlayers.map(player => (
+          <PlayerButton
+            key={player.id}
+            player={player}
+            score={getScore(player.id)}
+            showScore={showScores}
+            onPress={() => handleAwardPoint(player.id)}
+            disabled={timedOut}
+            size="sm"
+          />
+        ))}
+      </div>
     </div>
   )
 }
